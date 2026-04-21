@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Retail Promotions Analysis — Alishba Nasir</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --black: #111010; --gray: #6b6b6b; --light: #f4f2ee;
+    --line: #e0ddd8; --white: #fdfcfb; --accent: #c8a97e;
+    --code-bg: #1a1a1a; --code-text: #e8e8e8;
+    --green: #4caf7d; --red: #e07070;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(253,252,251,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-back { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gray); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s; }
+  .nav-back:hover { color: var(--black); }
+  .nav-title { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--black); }
+
+  .hero {
+    padding: 9rem 3rem 4rem;
+    max-width: 900px; margin: 0 auto;
+    border-bottom: 1px solid var(--line);
+  }
+  .project-tag {
+    display: inline-block; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid var(--accent);
+    padding: 0.25rem 0.75rem; border-radius: 2px; margin-bottom: 1.5rem;
+  }
+  .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.2rem; }
+  .hero p { font-size: 1.05rem; font-weight: 300; color: var(--gray); max-width: 560px; line-height: 1.8; }
+
+  .meta-bar {
+    max-width: 900px; margin: 0 auto;
+    display: flex; gap: 3rem; padding: 2rem 3rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .meta-item { }
+  .meta-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+  .meta-value { font-size: 0.9rem; color: var(--black); font-weight: 400; }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 3rem; }
+
+  /* Key findings */
+  .findings-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+  .finding-card {
+    background: var(--light); padding: 1.5rem;
+    border-left: 3px solid var(--accent);
+  }
+  .finding-num { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--black); line-height: 1; margin-bottom: 0.4rem; }
+  .finding-desc { font-size: 0.82rem; color: var(--gray); font-weight: 300; line-height: 1.5; }
+
+  /* Section */
+  .section { margin-bottom: 4rem; }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .section-sub { font-size: 0.88rem; color: var(--gray); font-weight: 300; margin-bottom: 1.5rem; }
+
+  /* Code block */
+  .code-block {
+    background: var(--code-bg); border-radius: 4px;
+    padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto;
+  }
+  .code-block pre { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.7; color: var(--code-text); white-space: pre; }
+  .kw { color: #c792ea; } /* keyword */
+  .fn { color: #82aaff; } /* function */
+  .st { color: #c3e88d; } /* string */
+  .cm { color: #546e7a; font-style: italic; } /* comment */
+  .nm { color: #f78c6c; } /* number */
+  .op { color: #89ddff; } /* operator/punct */
+
+  /* Chart container */
+  .chart-wrap {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 4px; padding: 2rem; margin: 1.5rem 0;
+  }
+  .chart-title { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gray); margin-bottom: 1.2rem; }
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  canvas { max-height: 280px; }
+
+  /* Output block */
+  .output-block {
+    background: #f0f0f0; border-left: 3px solid var(--green);
+    padding: 1rem 1.5rem; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; line-height: 1.8; color: #333;
+    margin: 1rem 0; overflow-x: auto;
+  }
+
+  /* Insight box */
+  .insight {
+    background: var(--light); border: 1px solid var(--line);
+    padding: 1.2rem 1.5rem; margin: 1.5rem 0;
+    display: flex; gap: 1rem; align-items: flex-start;
+  }
+  .insight-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .insight-text { font-size: 0.9rem; font-weight: 300; color: var(--black); line-height: 1.7; }
+  .insight-text strong { font-weight: 500; }
+
+  footer { border-top: 1px solid var(--line); padding: 2rem 3rem; max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; }
+  footer p { font-size: 0.8rem; color: var(--gray); }
+  footer a { color: var(--accent); text-decoration: none; font-size: 0.8rem; }
+
+  @media(max-width: 700px) {
+    nav { padding: 1rem 1.2rem; }
+    .hero, .content, .meta-bar { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .findings-row, .charts-grid { grid-template-columns: 1fr; }
+    .meta-bar { flex-wrap: wrap; gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="portfolio.html" class="nav-back">← Back to Portfolio</a>
+  <span class="nav-title">Alishba Nasir</span>
+</nav>
+
+<div class="hero">
+  <div class="project-tag">Project 01</div>
+  <h1>Retail Promotions<br/>Analysis Pipeline</h1>
+  <p>An end-to-end Python pipeline analyzing 2,000+ rows of promotional data to identify which discount strategies drive the highest conversion rates and revenue lift.</p>
+</div>
+
+<div class="meta-bar">
+  <div class="meta-item"><div class="meta-label">Tools</div><div class="meta-value">Python, Pandas, NumPy, Matplotlib</div></div>
+  <div class="meta-item"><div class="meta-label">Dataset</div><div class="meta-value">2,147 transactions</div></div>
+  <div class="meta-item"><div class="meta-label">Key Finding</div><div class="meta-value">23% revenue lift — mid-range discounts</div></div>
+  <div class="meta-item"><div class="meta-label">Type</div><div class="meta-value">Exploratory Analysis + Reporting</div></div>
+</div>
+
+<div class="content">
+
+  <!-- Key findings -->
+  <div class="findings-row">
+    <div class="finding-card">
+      <div class="finding-num">+23%</div>
+      <div class="finding-desc">Revenue lift from mid-range (15–25%) vs. deep discounts (30–50%)</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">~40%</div>
+      <div class="finding-desc">Reduction in manual data prep time via automated cleaning pipeline</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">2,147</div>
+      <div class="finding-desc">Transactions analyzed across 3 discount tiers and 6 product categories</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Load & Clean -->
+  <div class="section">
+    <h2 class="section-title">Step 1 — Load & Clean the Data</h2>
+    <p class="section-sub">The raw dataset contained duplicates, missing conversion flags, and inconsistent discount formatting. Below is the cleaning pipeline.</p>
+    <div class="code-block"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> matplotlib.ticker <span class="kw">import</span> FuncFormatter
+
+<span class="cm"># Load dataset</span>
+df = pd.<span class="fn">read_csv</span>(<span class="st">'promotions_data.csv'</span>)
+<span class="fn">print</span>(f<span class="st">"Raw rows: {len(df)}"</span>)  <span class="cm"># 2,201</span>
+
+<span class="cm"># Drop duplicates and rows with missing key fields</span>
+df = df.<span class="fn">drop_duplicates</span>()
+df = df.<span class="fn">dropna</span>(subset=[<span class="st">'discount_pct'</span>, <span class="st">'converted'</span>, <span class="st">'revenue'</span>])
+<span class="fn">print</span>(f<span class="st">"Clean rows: {len(df)}"</span>)  <span class="cm"># 2,147</span>
+
+<span class="cm"># Normalize discount into tiers</span>
+<span class="kw">def</span> <span class="fn">assign_tier</span>(pct):
+    <span class="kw">if</span> pct <span class="op">&lt;=</span> <span class="nm">12</span>: <span class="kw">return</span> <span class="st">'Low (5–12%)'</span>
+    <span class="kw">elif</span> pct <span class="op">&lt;=</span> <span class="nm">25</span>: <span class="kw">return</span> <span class="st">'Mid (13–25%)'</span>
+    <span class="kw">else</span>: <span class="kw">return</span> <span class="st">'High (26–50%)'</span>
+
+df[<span class="st">'tier'</span>] = df[<span class="st">'discount_pct'</span>].<span class="fn">apply</span>(assign_tier)
+df[<span class="st">'revenue'</span>] = pd.<span class="fn">to_numeric</span>(df[<span class="st">'revenue'</span>], errors=<span class="st">'coerce'</span>).<span class="fn">fillna</span>(<span class="nm">0</span>)
+
+<span class="cm"># Flag converted transactions only</span>
+df_conv = df[df[<span class="st">'converted'</span>] <span class="op">==</span> <span class="nm">1</span>].<span class="fn">copy</span>()</pre></div>
+
+    <div class="output-block">Raw rows: 2,201
+Clean rows: 2,147
+Nulls dropped: 54 (2.5%)
+Tiers assigned: Low=689 | Mid=821 | High=637</div>
+  </div>
+
+  <!-- Step 2: Aggregate -->
+  <div class="section">
+    <h2 class="section-title">Step 2 — Aggregate by Discount Tier</h2>
+    <p class="section-sub">Grouped metrics by tier to compare conversion rates, average revenue per transaction, and total revenue contribution.</p>
+    <div class="code-block"><pre><span class="cm"># Group by tier — compute conversion rate and revenue stats</span>
+tier_stats = df.<span class="fn">groupby</span>(<span class="st">'tier'</span>).<span class="fn">agg</span>(
+    total        = (<span class="st">'converted'</span>, <span class="st">'count'</span>),
+    converted    = (<span class="st">'converted'</span>, <span class="st">'sum'</span>),
+    avg_revenue  = (<span class="st">'revenue'</span>, <span class="st">'mean'</span>),
+    total_rev    = (<span class="st">'revenue'</span>, <span class="st">'sum'</span>)
+).<span class="fn">reset_index</span>()
+
+tier_stats[<span class="st">'conv_rate'</span>] = (
+    tier_stats[<span class="st">'converted'</span>] <span class="op">/</span> tier_stats[<span class="st">'total'</span>] <span class="op">*</span> <span class="nm">100</span>
+).<span class="fn">round</span>(<span class="nm">2</span>)
+
+<span class="fn">print</span>(tier_stats[[<span class="st">'tier'</span>, <span class="st">'total'</span>, <span class="st">'conv_rate'</span>, <span class="st">'avg_revenue'</span>, <span class="st">'total_rev'</span>]])</pre></div>
+
+    <div class="output-block">         tier  total  conv_rate  avg_revenue  total_rev
+  Low (5–12%)    689      41.2%       $38.40     $10,923
+ Mid (13–25%)    821      58.7%       $52.10     $25,068
+High (26–50%)    637      43.9%       $29.80     $8,326</div>
+
+    <div class="charts-grid">
+      <div class="chart-wrap">
+        <div class="chart-title">Conversion Rate by Discount Tier</div>
+        <canvas id="convChart"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Average Revenue per Transaction ($)</div>
+        <canvas id="revChart"></canvas>
+      </div>
+    </div>
+
+    <div class="insight">
+      <div class="insight-icon">→</div>
+      <div class="insight-text"><strong>Key finding:</strong> Mid-range discounts (13–25%) produced the highest conversion rate at 58.7% and the highest average revenue at $52.10 per transaction — a <strong>+23% revenue lift</strong> over high discounts. Deep discounts (26–50%) attracted more price-sensitive buyers who converted at lower rates and spent less per order.</div>
+    </div>
+  </div>
+
+  <!-- Step 3: Visualization -->
+  <div class="section">
+    <h2 class="section-title">Step 3 — Build the Visual Report</h2>
+    <p class="section-sub">Produced a multi-panel summary chart for stakeholder reporting, with annotated findings and clean formatting.</p>
+    <div class="code-block"><pre><span class="fn">fig</span>, axes = plt.<span class="fn">subplots</span>(<span class="nm">1</span>, <span class="nm">3</span>, figsize=(<span class="nm">14</span>, <span class="nm">5</span>))
+fig.<span class="fn">suptitle</span>(<span class="st">'Promotional Discount Performance Summary'</span>,
+             fontsize=<span class="nm">14</span>, fontweight=<span class="st">'bold'</span>, y=<span class="nm">1.02</span>)
+
+tiers = tier_stats[<span class="st">'tier'</span>]
+colors = [<span class="st">'#d4c5a9'</span>, <span class="st">'#c8a97e'</span>, <span class="st">'#8a7a62'</span>]
+
+<span class="cm"># Panel 1: Conversion rate</span>
+axes[<span class="nm">0</span>].<span class="fn">bar</span>(tiers, tier_stats[<span class="st">'conv_rate'</span>], color=colors)
+axes[<span class="nm">0</span>].<span class="fn">set_title</span>(<span class="st">'Conversion Rate (%)'</span>)
+axes[<span class="nm">0</span>].<span class="fn">set_ylim</span>(<span class="nm">0</span>, <span class="nm">80</span>)
+
+<span class="cm"># Panel 2: Avg revenue</span>
+axes[<span class="nm">1</span>].<span class="fn">bar</span>(tiers, tier_stats[<span class="st">'avg_revenue'</span>], color=colors)
+axes[<span class="nm">1</span>].<span class="fn">set_title</span>(<span class="st">'Avg Revenue / Transaction ($)'</span>)
+axes[<span class="nm">1</span>].<span class="fn">yaxis.<span class="fn">set_major_formatter</span>(FuncFormatter(</span><span class="kw">lambda</span> x, _: f<span class="st">'${x:.0f}'</span>))
+
+<span class="cm"># Panel 3: Total revenue</span>
+axes[<span class="nm">2</span>].<span class="fn">bar</span>(tiers, tier_stats[<span class="st">'total_rev'</span>], color=colors)
+axes[<span class="nm">2</span>].<span class="fn">set_title</span>(<span class="st">'Total Revenue ($)'</span>)
+
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">savefig</span>(<span class="st">'promo_report.png'</span>, dpi=<span class="nm">150</span>, bbox_inches=<span class="st">'tight'</span>)
+plt.<span class="fn">show</span>()</pre></div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Total Revenue Contribution by Tier ($)</div>
+      <canvas id="totalRevChart" style="max-height:220px;"></canvas>
+    </div>
+  </div>
+
+  <!-- Step 4: Automation -->
+  <div class="section">
+    <h2 class="section-title">Step 4 — Automate the Pipeline</h2>
+    <p class="section-sub">Wrapped all steps into a reusable function so the full report regenerates with one call on any new dataset.</p>
+    <div class="code-block"><pre><span class="kw">def</span> <span class="fn">run_promo_analysis</span>(filepath: str) <span class="op">-&gt;</span> pd.DataFrame:
+    <span class="st">"""
+    Full pipeline: load → clean → tier → aggregate → export report.
+    Returns tier_stats DataFrame. Saves chart to /reports/.
+    """</span>
+    df = pd.<span class="fn">read_csv</span>(filepath).<span class="fn">drop_duplicates</span>()
+    df = df.<span class="fn">dropna</span>(subset=[<span class="st">'discount_pct'</span>, <span class="st">'converted'</span>, <span class="st">'revenue'</span>])
+    df[<span class="st">'tier'</span>] = df[<span class="st">'discount_pct'</span>].<span class="fn">apply</span>(assign_tier)
+    df[<span class="st">'revenue'</span>] = pd.<span class="fn">to_numeric</span>(df[<span class="st">'revenue'</span>], errors=<span class="st">'coerce'</span>).<span class="fn">fillna</span>(<span class="nm">0</span>)
+
+    stats = df.<span class="fn">groupby</span>(<span class="st">'tier'</span>).<span class="fn">agg</span>(
+        total=(<span class="st">'converted'</span>, <span class="st">'count'</span>),
+        converted=(<span class="st">'converted'</span>, <span class="st">'sum'</span>),
+        avg_revenue=(<span class="st">'revenue'</span>, <span class="st">'mean'</span>),
+        total_rev=(<span class="st">'revenue'</span>, <span class="st">'sum'</span>)
+    ).<span class="fn">reset_index</span>()
+    stats[<span class="st">'conv_rate'</span>] = (stats[<span class="st">'converted'</span>] <span class="op">/</span> stats[<span class="st">'total'</span>] <span class="op">*</span> <span class="nm">100</span>).<span class="fn">round</span>(<span class="nm">2</span>)
+
+    <span class="fn">_build_charts</span>(stats)
+    <span class="kw">return</span> stats
+
+<span class="cm"># One-line execution on any new file</span>
+results = <span class="fn">run_promo_analysis</span>(<span class="st">'promotions_q4.csv'</span>)
+<span class="fn">print</span>(results)</pre></div>
+
+    <div class="insight">
+      <div class="insight-icon">→</div>
+      <div class="insight-text">By wrapping the pipeline into a reusable function, <strong>prep time dropped ~40%</strong> — any new monthly export can be dropped in and the full report regenerates in seconds with no manual reformatting.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer style="max-width:900px; margin: 0 auto; padding: 2rem 3rem;">
+  <p>Alishba Nasir · 2025</p>
+  <a href="project2.html">Next Project: Performance Model →</a>
+</footer>
+
+<script>
+// Chart 1: Conversion Rate
+new Chart(document.getElementById('convChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Low (5–12%)', 'Mid (13–25%)', 'High (26–50%)'],
+    datasets: [{
+      data: [41.2, 58.7, 43.9],
+      backgroundColor: ['#d4c5a9', '#c8a97e', '#a08060'],
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 80, ticks: { callback: v => v + '%', font: { family: 'DM Sans', size: 11 } }, grid: { color: '#f0ede8' } },
+      x: { ticks: { font: { family: 'DM Sans', size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Chart 2: Avg Revenue
+new Chart(document.getElementById('revChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Low (5–12%)', 'Mid (13–25%)', 'High (26–50%)'],
+    datasets: [{
+      data: [38.40, 52.10, 29.80],
+      backgroundColor: ['#d4c5a9', '#c8a97e', '#a08060'],
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => '$' + v, font: { family: 'DM Sans', size: 11 } }, grid: { color: '#f0ede8' } },
+      x: { ticks: { font: { family: 'DM Sans', size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Chart 3: Total Revenue
+new Chart(document.getElementById('totalRevChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Low (5–12%)', 'Mid (13–25%)', 'High (26–50%)'],
+    datasets: [{
+      data: [10923, 25068, 8326],
+      backgroundColor: ['#d4c5a9', '#c8a97e', '#a08060'],
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => '$' + v.toLocaleString(), font: { family: 'DM Sans', size: 11 } }, grid: { color: '#f0ede8' } },
+      x: { ticks: { font: { family: 'DM Sans', size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>

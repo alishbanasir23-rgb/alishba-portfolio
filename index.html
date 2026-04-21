@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Alishba Nasir</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #111010;
+    --gray: #6b6b6b;
+    --light: #f4f2ee;
+    --line: #e0ddd8;
+    --white: #fdfcfb;
+    --accent: #c8a97e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.4rem 4rem;
+    background: rgba(253,252,251,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.01em;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--black); }
+
+  /* ── SECTIONS ── */
+  section { padding: 7rem 4rem; max-width: 1000px; margin: 0 auto; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 6rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .hero-label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3.5rem, 8vw, 6.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gray);
+  }
+
+  .hero-sub {
+    margin-top: 2rem;
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: var(--gray);
+    max-width: 480px;
+    line-height: 1.75;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.6s forwards;
+  }
+
+  .hero-cta {
+    margin-top: 2.8rem;
+    display: flex;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.8s forwards;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1.5px solid var(--black);
+    color: var(--black);
+    background: transparent;
+    transition: all 0.25s;
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--black); color: var(--white); }
+  .btn.filled { background: var(--black); color: var(--white); }
+  .btn.filled:hover { background: transparent; color: var(--black); }
+
+  /* ── SECTION HEADER ── */
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.6rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 3rem;
+    color: var(--black);
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--line);
+    margin-bottom: 3rem;
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.85;
+    margin-bottom: 1.2rem;
+  }
+
+  .about-text p strong { color: var(--black); font-weight: 500; }
+
+  .about-stats { display: flex; flex-direction: column; gap: 2rem; }
+
+  .stat-item { border-top: 1px solid var(--line); padding-top: 1.2rem; }
+
+  .stat-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--black);
+    letter-spacing: -0.02em;
+  }
+
+  .stat-label {
+    font-size: 0.82rem;
+    color: var(--gray);
+    margin-top: 0.3rem;
+    font-weight: 400;
+  }
+
+  /* ── SKILLS ── */
+  #skills { background: var(--light); max-width: 100%; padding: 7rem 0; }
+  #skills .inner { max-width: 1000px; margin: 0 auto; padding: 0 4rem; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+
+  .skill-group { }
+
+  .skill-group-name {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .skill-tag {
+    font-size: 0.82rem;
+    font-weight: 400;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+    color: var(--black);
+    border-radius: 2px;
+  }
+
+  /* ── PROJECTS ── */
+  .projects-list { display: flex; flex-direction: column; gap: 0; }
+
+  .project-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 2rem;
+    align-items: start;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.2s;
+  }
+
+  .project-item:first-child { border-top: 1px solid var(--line); }
+
+  .project-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--line);
+    padding-top: 0.2rem;
+  }
+
+  .project-info { }
+
+  .project-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .project-stack {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+
+  .project-desc {
+    font-size: 0.92rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.75;
+    max-width: 560px;
+  }
+
+  .project-highlights {
+    list-style: none;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .project-highlights li {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: var(--gray);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .project-highlights li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.75rem;
+    top: 0.1rem;
+  }
+
+  /* ── RESUME ── */
+  #resume { background: var(--black); max-width: 100%; padding: 7rem 0; }
+  #resume .inner { max-width: 1000px; margin: 0 auto; padding: 0 4rem; display: flex; align-items: center; justify-content: space-between; gap: 3rem; }
+
+  .resume-text .section-label { color: var(--accent); }
+  .resume-text .section-title { color: var(--white); margin-bottom: 1rem; }
+  .resume-text p { font-size: 0.95rem; font-weight: 300; color: #999; max-width: 420px; line-height: 1.75; }
+
+  .btn-resume {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1.5px solid var(--white);
+    color: var(--white);
+    background: transparent;
+    transition: all 0.25s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .btn-resume:hover { background: var(--white); color: var(--black); }
+
+  /* ── CONTACT ── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .contact-intro {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--gray);
+    line-height: 1.85;
+  }
+
+  .contact-links { display: flex; flex-direction: column; gap: 0; }
+
+  .contact-link-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--black);
+    transition: color 0.2s;
+  }
+  .contact-link-item:first-child { border-top: 1px solid var(--line); }
+  .contact-link-item:hover { color: var(--accent); }
+
+  .contact-link-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 0.2rem;
+  }
+
+  .contact-link-value {
+    font-size: 1rem;
+    font-weight: 400;
+    color: inherit;
+  }
+
+  .contact-arrow { font-size: 1.2rem; opacity: 0.3; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  footer p { font-size: 0.8rem; color: var(--gray); font-weight: 300; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    section { padding: 5rem 1.5rem; }
+    #hero { padding: 6rem 1.5rem 4rem; }
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .project-item { grid-template-columns: 40px 1fr; }
+    .project-item > *:last-child { grid-column: 2; }
+    #resume .inner { flex-direction: column; padding: 0 1.5rem; }
+    #skills .inner { padding: 0 1.5rem; }
+    footer { padding: 2rem 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-name">Alishba Nasir</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="padding-left:4rem; padding-right:4rem;">
+  <p class="hero-label">Data Science & Analytics</p>
+  <h1 class="hero-title">Alishba<br/><em>Nasir</em></h1>
+  <p class="hero-sub">Data science student at Rutgers University with hands-on experience in research, analysis, and remote data work. I turn messy datasets into clear decisions.</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn filled">View Projects</a>
+    <a href="#contact" class="btn">Get in Touch</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label reveal">About</p>
+  <h2 class="section-title reveal">A little about me</h2>
+  <div class="divider reveal"></div>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>I'm a <strong>Data Science student at Rutgers University</strong> (Economics Track, minor in Computer Science) currently completing my Associate's degree at Bergen Community College before transferring in Fall 2026.</p>
+      <p>My background spans <strong>data research, analysis, and visualization</strong> — with real freelance experience delivering clean datasets and weekly analytical reports to clients remotely. I care about work that is precise, well-documented, and actually useful.</p>
+      <p>Outside of school and work, I'm drawn to the intersection of design and data — building things that look as good as they perform.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-item">
+        <div class="stat-number">100+</div>
+        <div class="stat-label">Data points tracked per client engagement</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">~40%</div>
+        <div class="stat-label">Reduction in data prep time via automated pipelines</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">18mo</div>
+        <div class="stat-label">Of independent remote operations experience</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="inner">
+    <p class="section-label reveal">Skills</p>
+    <h2 class="section-title reveal">What I work with</h2>
+    <div class="divider reveal"></div>
+    <div class="skills-grid reveal">
+      <div class="skill-group">
+        <div class="skill-group-name">Languages</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">SQL</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Libraries & Tools</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Pandas</span>
+          <span class="skill-tag">NumPy</span>
+          <span class="skill-tag">Matplotlib</span>
+          <span class="skill-tag">Jupyter</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Platforms</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Microsoft Excel</span>
+          <span class="skill-tag">Salesforce</span>
+          <span class="skill-tag">Google Workspace</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Analytics</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Statistical Modeling</span>
+          <span class="skill-tag">Regression Analysis</span>
+          <span class="skill-tag">Data Visualization</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Design</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Adobe Photoshop</span>
+          <span class="skill-tag">Illustrator</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <div class="skill-group-name">Workflow</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Technical Documentation</span>
+          <span class="skill-tag">Async Communication</span>
+          <span class="skill-tag">Remote Collaboration</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label reveal">Projects</p>
+  <h2 class="section-title reveal">Selected Work</h2>
+  <div class="divider reveal"></div>
+  <div class="projects-list">
+    <div class="project-item reveal">
+      <div class="project-num">01</div>
+      <div class="project-info">
+        <div class="project-stack">Python · Pandas · NumPy · Matplotlib</div>
+        <h3 class="project-title">Retail Promotions Analysis Pipeline</h3>
+        <p class="project-desc">Built an end-to-end data pipeline to analyze a 2,000+ row promotional dataset, identifying which discount tiers drove the highest conversion rates and surfacing a 23% revenue lift from mid-range promotions over deep discounts.</p>
+        <ul class="project-highlights">
+          <li>Automated data cleaning and aggregation, reducing reporting prep time by ~40%</li>
+          <li>Produced executive-ready visual summary report with trend charts and annotated insights</li>
+          <li>Structured findings for non-technical stakeholders across a distributed team</li>
+        </ul>
+        <a href="project1.html" style="display:inline-block;margin-top:1.2rem;font-size:0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;">View Project →</a>
+      </div>
+    </div>
+    <div class="project-item reveal">
+      <div class="project-num">02</div>
+      <div class="project-info">
+        <div class="project-stack">Excel · Regression Analysis · Trend Modeling</div>
+        <h3 class="project-title">Multi-Variable Performance Model</h3>
+        <p class="project-desc">Constructed a multi-variable regression model to evaluate the relationship between 6 operational inputs and output quality across an engineering dataset, uncovering hidden interactions that were inflating error rates.</p>
+        <ul class="project-highlights">
+          <li>Identified two variable interactions inflating error rates by ~15%</li>
+          <li>Documented findings with annotated charts and a written technical summary</li>
+          <li>Designed model to be reusable and adaptable for future datasets</li>
+        </ul>
+        <a href="project2.html" style="display:inline-block;margin-top:1.2rem;font-size:0.8rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--black);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:2px;">View Project →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESUME -->
+<section id="resume" style="padding:0;">
+  <div class="inner">
+    <div class="resume-text">
+      <p class="section-label">Resume</p>
+      <h2 class="section-title">Want the full picture?</h2>
+      <p>Download my resume for a complete view of my experience, education, and technical background.</p>
+    </div>
+    <a href="Alishba_Nasir_Resume_Final.docx" download class="btn-resume">Download Resume →</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label reveal">Contact</p>
+  <h2 class="section-title reveal">Let's connect</h2>
+  <div class="divider reveal"></div>
+  <div class="contact-grid reveal">
+    <div class="contact-intro">
+      <p>I'm currently open to remote roles in data analysis, research, and operations. If you have an opportunity or just want to say hello, feel free to reach out.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:alishbanasir23@gmail.com" class="contact-link-item">
+        <div>
+          <div class="contact-link-label">Email</div>
+          <div class="contact-link-value">alishbanasir23@gmail.com</div>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+      <a href="tel:+18624098960" class="contact-link-item">
+        <div>
+          <div class="contact-link-label">Phone</div>
+          <div class="contact-link-value">+1 (862) 409-8960</div>
+        </div>
+        <span class="contact-arrow">↗</span>
+      </a>
+      <div class="contact-link-item" style="cursor:default;">
+        <div>
+          <div class="contact-link-label">Location</div>
+          <div class="contact-link-value">New Jersey — Remote Preferred</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 Alishba Nasir</p>
+  <p>Data Science · Analytics · Remote</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

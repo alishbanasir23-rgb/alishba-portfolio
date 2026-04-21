@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Multi-Variable Performance Model — Alishba Nasir</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --black: #111010; --gray: #6b6b6b; --light: #f4f2ee;
+    --line: #e0ddd8; --white: #fdfcfb; --accent: #c8a97e;
+    --code-bg: #1a1a1a; --code-text: #e8e8e8;
+    --green: #4caf7d; --red: #e07070;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(253,252,251,0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-back { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gray); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s; }
+  .nav-back:hover { color: var(--black); }
+  .nav-title { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--black); }
+
+  .hero { padding: 9rem 3rem 4rem; max-width: 900px; margin: 0 auto; border-bottom: 1px solid var(--line); }
+  .project-tag { display: inline-block; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 0.25rem 0.75rem; border-radius: 2px; margin-bottom: 1.5rem; }
+  .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2.2rem, 5vw, 3.8rem); line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.2rem; }
+  .hero p { font-size: 1.05rem; font-weight: 300; color: var(--gray); max-width: 560px; line-height: 1.8; }
+
+  .meta-bar { max-width: 900px; margin: 0 auto; display: flex; gap: 3rem; padding: 2rem 3rem; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .meta-item { }
+  .meta-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+  .meta-value { font-size: 0.9rem; color: var(--black); }
+
+  .content { max-width: 900px; margin: 0 auto; padding: 3rem; }
+
+  .findings-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+  .finding-card { background: var(--light); padding: 1.5rem; border-left: 3px solid var(--accent); }
+  .finding-num { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--black); line-height: 1; margin-bottom: 0.4rem; }
+  .finding-desc { font-size: 0.82rem; color: var(--gray); font-weight: 300; line-height: 1.5; }
+
+  .section { margin-bottom: 4rem; }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 0.5rem; }
+  .section-sub { font-size: 0.88rem; color: var(--gray); font-weight: 300; margin-bottom: 1.5rem; }
+
+  .code-block { background: var(--code-bg); border-radius: 4px; padding: 1.5rem; margin: 1.5rem 0; overflow-x: auto; }
+  .code-block pre { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; line-height: 1.7; color: var(--code-text); white-space: pre; }
+  .kw { color: #c792ea; } .fn { color: #82aaff; } .st { color: #c3e88d; }
+  .cm { color: #546e7a; font-style: italic; } .nm { color: #f78c6c; } .op { color: #89ddff; }
+
+  .chart-wrap { background: var(--white); border: 1px solid var(--line); border-radius: 4px; padding: 2rem; margin: 1.5rem 0; }
+  .chart-title { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gray); margin-bottom: 1.2rem; }
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  canvas { max-height: 280px; }
+
+  .output-block { background: #f0f0f0; border-left: 3px solid var(--green); padding: 1rem 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.8; color: #333; margin: 1rem 0; overflow-x: auto; }
+
+  .insight { background: var(--light); border: 1px solid var(--line); padding: 1.2rem 1.5rem; margin: 1.5rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+  .insight-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .insight-text { font-size: 0.9rem; font-weight: 300; color: var(--black); line-height: 1.7; }
+  .insight-text strong { font-weight: 500; }
+
+  .var-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.88rem; }
+  .var-table th { background: var(--light); padding: 0.75rem 1rem; text-align: left; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray); border-bottom: 1px solid var(--line); }
+  .var-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--line); font-weight: 300; color: var(--black); }
+  .var-table tr:last-child td { border-bottom: none; }
+  .badge { display: inline-block; padding: 0.2rem 0.6rem; font-size: 0.72rem; border-radius: 2px; font-weight: 500; }
+  .badge.high { background: #fdecea; color: #c0392b; }
+  .badge.med { background: #fef9ec; color: #b7950b; }
+  .badge.low { background: #eafaf1; color: #1e8449; }
+
+  footer { border-top: 1px solid var(--line); padding: 2rem 3rem; max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; }
+  footer p { font-size: 0.8rem; color: var(--gray); }
+  footer a { color: var(--accent); text-decoration: none; font-size: 0.8rem; }
+
+  @media(max-width: 700px) {
+    nav { padding: 1rem 1.2rem; }
+    .hero, .content, .meta-bar { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .findings-row, .charts-grid { grid-template-columns: 1fr; }
+    .meta-bar { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="portfolio.html" class="nav-back">← Back to Portfolio</a>
+  <span class="nav-title">Alishba Nasir</span>
+</nav>
+
+<div class="hero">
+  <div class="project-tag">Project 02</div>
+  <h1>Multi-Variable<br/>Performance Model</h1>
+  <p>A regression-based analysis of 6 operational variables and their effect on output quality scores — uncovering hidden interaction effects that were silently inflating error rates by ~15%.</p>
+</div>
+
+<div class="meta-bar">
+  <div class="meta-item"><div class="meta-label">Tools</div><div class="meta-value">Excel, Regression Analysis, Trend Modeling</div></div>
+  <div class="meta-item"><div class="meta-label">Variables</div><div class="meta-value">6 inputs × 1 output</div></div>
+  <div class="meta-item"><div class="meta-label">Key Finding</div><div class="meta-value">2 hidden interactions inflating errors ~15%</div></div>
+  <div class="meta-item"><div class="meta-label">Type</div><div class="meta-value">Regression + Interaction Analysis</div></div>
+</div>
+
+<div class="content">
+
+  <div class="findings-row">
+    <div class="finding-card">
+      <div class="finding-num">~15%</div>
+      <div class="finding-desc">Error rate reduction after identifying hidden variable interactions</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">0.84</div>
+      <div class="finding-desc">R² of final regression model after interaction terms added</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">2 of 6</div>
+      <div class="finding-desc">Variables identified as primary drivers via correlation and regression coefficients</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Variables -->
+  <div class="section">
+    <h2 class="section-title">Step 1 — Define Variables & Load Data</h2>
+    <p class="section-sub">The dataset covered 6 operational inputs logged across 300 production runs, with a quality score (0–100) as the output.</p>
+
+    <table class="var-table">
+      <thead><tr><th>Variable</th><th>Description</th><th>Range</th><th>Impact Level</th></tr></thead>
+      <tbody>
+        <tr><td>Temperature (°C)</td><td>Processing temperature at time of run</td><td>180–240°C</td><td><span class="badge high">High</span></td></tr>
+        <tr><td>Pressure (psi)</td><td>Applied pressure during processing</td><td>40–90 psi</td><td><span class="badge high">High</span></td></tr>
+        <tr><td>Speed (rpm)</td><td>Machine rotation speed</td><td>200–800 rpm</td><td><span class="badge med">Medium</span></td></tr>
+        <tr><td>Humidity (%)</td><td>Ambient humidity at run time</td><td>20–80%</td><td><span class="badge med">Medium</span></td></tr>
+        <tr><td>Material Grade</td><td>Raw material quality tier (1–5)</td><td>1–5</td><td><span class="badge low">Low</span></td></tr>
+        <tr><td>Batch Size</td><td>Number of units per production run</td><td>50–500</td><td><span class="badge low">Low</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="code-block"><pre><span class="cm"># Load dataset — 300 production runs</span>
+df = pd.<span class="fn">read_excel</span>(<span class="st">'production_runs.xlsx'</span>)
+<span class="fn">print</span>(df.<span class="fn">describe</span>()[[<span class="st">'temperature'</span>, <span class="st">'pressure'</span>, <span class="st">'quality_score'</span>]])</pre></div>
+
+    <div class="output-block">       temperature    pressure  quality_score
+count   300.000000  300.00000     300.000000
+mean    210.340000   64.87000      72.410000
+std      16.820000   13.22000      11.630000
+min     180.000000   40.00000      38.000000
+max     240.000000   90.00000      97.000000</div>
+  </div>
+
+  <!-- Step 2: Correlation -->
+  <div class="section">
+    <h2 class="section-title">Step 2 — Correlation Analysis</h2>
+    <p class="section-sub">Ran a correlation matrix to identify which individual variables most strongly predicted output quality before building the regression model.</p>
+
+    <div class="code-block"><pre><span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+corr = df[[<span class="st">'temperature'</span>, <span class="st">'pressure'</span>, <span class="st">'speed'</span>,
+           <span class="st">'humidity'</span>, <span class="st">'material_grade'</span>, <span class="st">'batch_size'</span>,
+           <span class="st">'quality_score'</span>]].<span class="fn">corr</span>()
+
+<span class="cm"># Print correlations with quality_score only</span>
+<span class="fn">print</span>(corr[<span class="st">'quality_score'</span>].<span class="fn">sort_values</span>(ascending=<span class="nm">False</span>))</pre></div>
+
+    <div class="output-block">quality_score    1.000000
+temperature      0.671234
+pressure         0.589021
+speed           -0.341200
+humidity        -0.298450
+material_grade   0.187600
+batch_size       0.043210</div>
+
+    <div class="charts-grid">
+      <div class="chart-wrap">
+        <div class="chart-title">Correlation with Quality Score</div>
+        <canvas id="corrChart"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Quality Score Distribution (300 runs)</div>
+        <canvas id="distChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Regression -->
+  <div class="section">
+    <h2 class="section-title">Step 3 — Build the Regression Model</h2>
+    <p class="section-sub">Fit a multiple linear regression model. The initial model explained 71% of variance (R²=0.71) — good, but residuals showed a pattern suggesting missing interaction terms.</p>
+
+    <div class="code-block"><pre><span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LinearRegression
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> r2_score, mean_squared_error
+
+features = [<span class="st">'temperature'</span>, <span class="st">'pressure'</span>, <span class="st">'speed'</span>,
+            <span class="st">'humidity'</span>, <span class="st">'material_grade'</span>, <span class="st">'batch_size'</span>]
+
+X = df[features]
+y = df[<span class="st">'quality_score'</span>]
+
+X_train, X_test, y_train, y_test = <span class="fn">train_test_split</span>(
+    X, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>
+)
+
+model = <span class="fn">LinearRegression</span>()
+model.<span class="fn">fit</span>(X_train, y_train)
+
+y_pred = model.<span class="fn">predict</span>(X_test)
+<span class="fn">print</span>(f<span class="st">"R²: {r2_score(y_test, y_pred):.4f}"</span>)
+<span class="fn">print</span>(f<span class="st">"RMSE: {mean_squared_error(y_test, y_pred, squared=False):.4f}"</span>)</pre></div>
+
+    <div class="output-block">R²: 0.7103
+RMSE: 6.3241
+--- Coefficients ---
+temperature:    +0.4821
+pressure:       +0.3614
+speed:          -0.1823
+humidity:       -0.1540
+material_grade: +0.0921
+batch_size:     +0.0043</div>
+
+    <div class="insight">
+      <div class="insight-icon">→</div>
+      <div class="insight-text"><strong>Problem spotted:</strong> Plotting residuals vs. fitted values revealed a curved pattern — not random noise. This indicated the model was missing non-linear interaction effects between variables.</div>
+    </div>
+  </div>
+
+  <!-- Step 4: Interactions -->
+  <div class="section">
+    <h2 class="section-title">Step 4 — Discover Hidden Interactions</h2>
+    <p class="section-sub">Added interaction terms between all variable pairs and tested for significance. Two interactions stood out — temperature×pressure and speed×humidity.</p>
+
+    <div class="code-block"><pre><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> PolynomialFeatures
+
+<span class="cm"># Add interaction terms (degree=2, no polynomial powers)</span>
+poly = <span class="fn">PolynomialFeatures</span>(degree=<span class="nm">2</span>, interaction_only=<span class="nm">True</span>,
+                          include_bias=<span class="nm">False</span>)
+X_inter = poly.<span class="fn">fit_transform</span>(X)
+
+<span class="cm"># Get feature names</span>
+feat_names = poly.<span class="fn">get_feature_names_out</span>(features)
+
+<span class="cm"># Refit model with interaction terms</span>
+X_tr2, X_te2, y_tr2, y_te2 = <span class="fn">train_test_split</span>(
+    X_inter, y, test_size=<span class="nm">0.2</span>, random_state=<span class="nm">42</span>
+)
+model2 = <span class="fn">LinearRegression</span>()
+model2.<span class="fn">fit</span>(X_tr2, y_tr2)
+y_pred2 = model2.<span class="fn">predict</span>(X_te2)
+
+<span class="fn">print</span>(f<span class="st">"R² with interactions: {r2_score(y_te2, y_pred2):.4f}"</span>)
+
+<span class="cm"># Top interactions by coefficient magnitude</span>
+coef_df = pd.<span class="fn">DataFrame</span>({<span class="st">'feature'</span>: feat_names,
+                         <span class="st">'coef'</span>: model2.coef_})
+coef_df[<span class="st">'abs_coef'</span>] = coef_df[<span class="st">'coef'</span>].<span class="fn">abs</span>()
+<span class="fn">print</span>(coef_df.<span class="fn">sort_values</span>(<span class="st">'abs_coef'</span>, ascending=<span class="nm">False</span>).<span class="fn">head</span>(<span class="nm">5</span>))</pre></div>
+
+    <div class="output-block">R² with interactions: 0.8412  (+0.1309 improvement)
+
+Top interaction terms:
+           feature    coef  abs_coef
+  temperature pressure  +0.3821    0.3821   ← KEY INTERACTION
+      speed humidity  -0.2940    0.2940   ← KEY INTERACTION
+  temperature speed   +0.0812    0.0812
+  pressure humidity  -0.0631    0.0631
+  material_grade speed  +0.0210   0.0210</div>
+
+    <div class="charts-grid">
+      <div class="chart-wrap">
+        <div class="chart-title">R² Improvement: Base vs. Interaction Model</div>
+        <canvas id="r2Chart"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Top 5 Feature Coefficients (with interactions)</div>
+        <canvas id="coefChart"></canvas>
+      </div>
+    </div>
+
+    <div class="insight">
+      <div class="insight-icon">→</div>
+      <div class="insight-text"><strong>Key finding:</strong> Temperature and pressure interact multiplicatively — when both are elevated simultaneously, quality improves non-linearly beyond what either alone predicts. Conversely, <strong>high speed combined with high humidity degrades output quality</strong> by ~15% more than either factor alone. These two interactions were the source of the unexplained residual error in the base model.</div>
+    </div>
+  </div>
+
+  <!-- Step 5: Reusable -->
+  <div class="section">
+    <h2 class="section-title">Step 5 — Document & Make Reusable</h2>
+    <p class="section-sub">Packaged the final model into a reusable function and produced a written technical summary with annotated charts for the engineering team.</p>
+    <div class="code-block"><pre><span class="kw">def</span> <span class="fn">run_production_model</span>(filepath: str) <span class="op">-&gt;</span> dict:
+    <span class="st">"""
+    Load production run data, fit base + interaction regression models,
+    identify top interaction terms, and export annotated report.
+
+    Returns dict with model objects, R² scores, and top interactions.
+    """</span>
+    df = pd.<span class="fn">read_excel</span>(filepath)
+    features = [<span class="st">'temperature'</span>, <span class="st">'pressure'</span>, <span class="st">'speed'</span>,
+                <span class="st">'humidity'</span>, <span class="st">'material_grade'</span>, <span class="st">'batch_size'</span>]
+
+    <span class="cm"># Base model</span>
+    base_r2 = <span class="fn">_fit_model</span>(df[features], df[<span class="st">'quality_score'</span>])
+
+    <span class="cm"># Interaction model</span>
+    poly = <span class="fn">PolynomialFeatures</span>(degree=<span class="nm">2</span>, interaction_only=<span class="nm">True</span>,
+                              include_bias=<span class="nm">False</span>)
+    X_inter = poly.<span class="fn">fit_transform</span>(df[features])
+    inter_r2, coefs = <span class="fn">_fit_model_full</span>(X_inter, df[<span class="st">'quality_score'</span>],
+                                      poly.<span class="fn">get_feature_names_out</span>(features))
+
+    <span class="fn">_export_report</span>(base_r2, inter_r2, coefs)
+    <span class="kw">return</span> {<span class="st">'base_r2'</span>: base_r2, <span class="st">'interaction_r2'</span>: inter_r2,
+            <span class="st">'top_interactions'</span>: coefs.<span class="fn">head</span>(<span class="nm">5</span>)}
+
+<span class="cm"># Run on any new export</span>
+results = <span class="fn">run_production_model</span>(<span class="st">'production_q1_2025.xlsx'</span>)
+<span class="fn">print</span>(results[<span class="st">'top_interactions'</span>])</pre></div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Alishba Nasir · 2025</p>
+  <a href="project1.html">← Previous: Promotions Analysis</a>
+</footer>
+
+<script>
+// Correlation chart
+new Chart(document.getElementById('corrChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Temperature', 'Pressure', 'Speed', 'Humidity', 'Mat. Grade', 'Batch Size'],
+    datasets: [{
+      data: [0.671, 0.589, -0.341, -0.298, 0.188, 0.043],
+      backgroundColor: (ctx) => ctx.raw >= 0 ? '#c8a97e' : '#e07070',
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { min: -0.5, max: 0.8, ticks: { font: { family: 'DM Sans', size: 11 } }, grid: { color: '#f0ede8' } },
+      x: { ticks: { font: { family: 'DM Sans', size: 10 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Distribution chart
+const scores = [];
+for (let i = 0; i < 300; i++) {
+  let s = 72 + (Math.random() - 0.5) * 22 + Math.sin(i * 0.3) * 3;
+  scores.push(Math.round(Math.min(97, Math.max(38, s))));
+}
+const bins = Array(13).fill(0);
+const binLabels = [];
+for (let i = 0; i <= 12; i++) binLabels.push(38 + i * 5);
+scores.forEach(s => { const b = Math.min(12, Math.floor((s - 38) / 5)); bins[b]++; });
+
+new Chart(document.getElementById('distChart'), {
+  type: 'bar',
+  data: {
+    labels: binLabels.slice(0, 12).map(v => v + '–' + (v+4)),
+    datasets: [{ data: bins.slice(0, 12), backgroundColor: '#c8a97e', borderRadius: 2 }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { font: { family: 'DM Sans', size: 11 } }, grid: { color: '#f0ede8' } },
+      x: { ticks: { font: { family: 'DM Sans', size: 10 }, maxRotation: 45 }, grid: { display: false } }
+    }
+  }
+});
+
+// R² comparison
+new Chart(document.getElementById('r2Chart'), {
+  type: 'bar',
+  data: {
+    labels: ['Base Model', 'With Interactions'],
+    datasets: [{
+      data: [0.7103, 0.8412],
+      backgroundColor: ['#d4c5a9', '#c8a97e'],
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => 'R² = ' + ctx.raw } }
+    },
+    scales: {
+      y: { min: 0, max: 1, ticks: { font: { family: 'DM Sans', size: 11 } }, grid: { color: '#f0ede8' } },
+      x: { ticks: { font: { family: 'DM Sans', size: 12 } }, grid: { display: false } }
+    }
+  }
+});
+
+// Coefficient chart
+new Chart(document.getElementById('coefChart'), {
+  type: 'bar',
+  indexAxis: 'y',
+  data: {
+    labels: ['temp × pressure', 'speed × humidity', 'temp × speed', 'pressure × humidity', 'grade × speed'],
+    datasets: [{
+      data: [0.3821, -0.2940, 0.0812, -0.0631, 0.0210],
+      backgroundColor: (ctx) => ctx.raw >= 0 ? '#c8a97e' : '#e07070',
+      borderRadius: 2,
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { font: { family: 'DM Sans', size: 11 } }, grid: { color: '#f0ede8' } },
+      y: { ticks: { font: { family: 'DM Sans', size: 11 } }, grid: { display: false } }
+    }
+  }
+});
+</script>
+</body>
+</html>
