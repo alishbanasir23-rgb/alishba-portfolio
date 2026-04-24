@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alishba Nasir — Resume</title>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a1a;
+    --muted: #5a5a5a;
+    --light: #8a8a8a;
+    --rule: #d8d4cf;
+    --accent: #3b4f6b;
+    --bg: #faf9f7;
+    --page: #ffffff;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'Times New Roman', Times, serif;
+    color: var(--ink);
+    padding: 40px 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    background: var(--page);
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 56px 60px 60px;
+    box-shadow: 0 2px 40px rgba(0,0,0,0.08);
+  }
+
+  /* ── Header ── */
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 42px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .contact {
+    text-align: right;
+    font-size: 11.5px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.85;
+  }
+
+  .contact a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .contact a:hover { text-decoration: underline; }
+
+  /* ── Sections ── */
+  section {
+    margin-bottom: 26px;
+  }
+
+  .section-label {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── Education ── */
+  .edu-entry {
+    margin-bottom: 12px;
+  }
+
+  .edu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .edu-school {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .edu-date {
+    font-size: 11px;
+    color: var(--light);
+    font-weight: 300;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .edu-degree {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 2px;
+    line-height: 1.5;
+  }
+
+  /* ── Skills ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 6px 12px;
+    font-size: 12.5px;
+  }
+
+  .skill-category {
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .skill-list {
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.55;
+  }
+
+  /* ── Projects & Experience ── */
+  .entry {
+    margin-bottom: 18px;
+  }
+
+  .entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .entry-title {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .entry-meta {
+    font-size: 11px;
+    color: var(--light);
+    font-weight: 300;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .entry-sub {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 400;
+    margin-bottom: 5px;
+    font-style: italic;
+  }
+
+  ul {
+    padding-left: 16px;
+    list-style: none;
+  }
+
+  ul li {
+    font-size: 12.5px;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.6;
+    margin-bottom: 3px;
+    position: relative;
+    padding-left: 10px;
+  }
+
+  ul li::before {
+    content: '—';
+    position: absolute;
+    left: -6px;
+    color: var(--rule);
+    font-size: 10px;
+  }
+
+  @media print {
+    body { padding: 0; background: white; }
+    .page { box-shadow: none; padding: 40px 48px; }
+  }
+
+  @media (max-width: 600px) {
+    .page { padding: 32px 24px; }
+    h1 { font-size: 30px; }
+    header { grid-template-columns: 1fr; }
+    .contact { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>Alishba Nasir</h1>
+    <div class="contact">
+      New Jersey, NJ<br>
+      <a href="mailto:alishbanasir23@gmail.com">alishbanasir23@gmail.com</a><br>
+      <a href="https://alishbanasir23-rgb.github.io/alishba-portfolio/" target="_blank">Portfolio ↗</a>
+    </div>
+  </header>
+
+  <!-- Education -->
+  <section>
+    <div class="section-label">Education</div>
+
+    <div class="edu-entry">
+      <div class="edu-header">
+        <span class="edu-school">Bergen Community College — New Jersey, NJ</span>
+        <span class="edu-date">Aug 2025 – Aug 2026</span>
+      </div>
+      <div class="edu-degree">Associate of Science, Engineering Science<br>
+        <span style="font-size:11.5px;">Relevant Coursework: Data Structures, Linear Algebra, Statistics, Calculus II, Physics II</span>
+      </div>
+    </div>
+
+    <div class="edu-entry">
+      <div class="edu-header">
+        <span class="edu-school">Rutgers University — New Jersey, NJ</span>
+        <span class="edu-date">Expected Transfer: Jan 2027</span>
+      </div>
+      <div class="edu-degree">Bachelor of Science, Data Science — Economics Track &nbsp;|&nbsp; Minor: Computer Science</div>
+    </div>
+  </section>
+
+  <!-- Technical Skills -->
+  <section>
+    <div class="section-label">Technical Skills</div>
+    <div class="skills-grid">
+      <span class="skill-category">Languages & Tools</span>
+      <span class="skill-list">Python, SQL, Microsoft Excel, NumPy, Pandas, Matplotlib, Jupyter Notebook, Google Workspace, Adobe Photoshop & Illustrator, Salesforce</span>
+      <span class="skill-category">Competencies</span>
+      <span class="skill-list">Data Analysis, Statistical Modeling, Regression Analysis, Data Visualization, Research & Reporting, Technical Documentation, Async Communication, Remote Collaboration</span>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section>
+    <div class="section-label">Technical Projects</div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Retail Promotions Analysis</span>
+      </div>
+      <div class="entry-sub">Python — Pandas, Matplotlib, NumPy</div>
+      <ul>
+        <li>Analyzed a 2,000+ row promotional dataset to identify which discount tiers drove the highest conversion rates, surfacing a 23% revenue lift from mid-range promotions over deep discounts</li>
+        <li>Automated the data cleaning and aggregation pipeline, reducing reporting prep time by ~40%; produced a visual summary report used to guide pricing decisions</li>
+        <li>Structured findings into an executive-ready deliverable with trend charts and annotated insights, suitable for non-technical stakeholders</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Multi-Variable Performance Model</span>
+      </div>
+      <div class="entry-sub">Excel — Regression, Trend Analysis</div>
+      <ul>
+        <li>Built a multi-variable regression model to evaluate the relationship between 6 operational inputs and output quality across an engineering dataset</li>
+        <li>Identified two previously undetected variable interactions that were inflating error rates by ~15%; documented findings with annotated charts and a written technical summary</li>
+        <li>Designed the model to be reusable and adaptable for future datasets, reducing setup time for repeat analyses</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section>
+    <div class="section-label">Professional Experience</div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Data Research Analyst</span>
+        <span class="entry-meta">Jan 2024 – Jul 2025</span>
+      </div>
+      <div class="entry-sub">Freelance | Remote</div>
+      <ul>
+        <li>Sourced, verified, and structured pricing and market data across 10+ concurrent sources, delivering clean datasets that improved client decision-making reliability</li>
+        <li>Built and maintained trackers monitoring 100+ data points across promotions and inventory trends with zero reported errors over 18 months</li>
+        <li>Produced weekly analytical summaries delivered asynchronously to remote clients, directly informing strategic pricing and inventory decisions</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Design Sales Consultant</span>
+        <span class="entry-meta">Jun 2025 – Present</span>
+      </div>
+      <div class="entry-sub">PaintPourri | Hunter Douglas, NJ</div>
+      <ul>
+        <li>Managed 50+ client projects end-to-end from consultation through specification, ordering, and installation with 100% on-time delivery</li>
+        <li>Analyzed customer preferences and product trends to inform recommendations and improve conversion rates</li>
+        <li>Conducted technical consultations assessing lighting, spatial constraints, and functional specs; prepared detailed documentation and verified dimensional accuracy</li>
+        <li>Completed Design Consultant Certification in customer experience and systems-based design principles</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Guest Experience Coordinator</span>
+        <span class="entry-meta">Feb 2021 – Oct 2022</span>
+      </div>
+      <div class="entry-sub">Self-Managed Airbnb, NJ</div>
+      <ul>
+        <li>Independently managed all operations for a short-term rental including guest communication, scheduling, and issue resolution with no oversight</li>
+        <li>Achieved and sustained a 98% guest satisfaction rating over 18 months through consistent async communication and proactive problem-solving</li>
+      </ul>
+    </div>
+
+    <div class="entry">
+      <div class="entry-header">
+        <span class="entry-title">Architectural Intern</span>
+        <span class="entry-meta">Aug 2020 – Dec 2020</span>
+      </div>
+      <div class="entry-sub">AIDO, Islamabad, Pakistan</div>
+      <ul>
+        <li>Contributed to architectural planning and design development for the Ali Medical Center courtyard project</li>
+        <li>Reviewed blueprint drafts for structural requirements; developed mood boards and material selections adopted by senior architects</li>
+      </ul>
+    </div>
+
+  </section>
+</div>
+</body>
+</html>
